@@ -51,7 +51,7 @@ assemblyai, voice-agent-api, universal-3, digital-twin, hazmat, osha-301, typesc
 | Asset | Location in Repo | Action Required |
 |---|---|---|
 | **Cover Image (16:9 / 1200×630)** | [`docs/cover.jpg`](file:///e:/OPENCODE/AssemblyLABLAB/docs/cover.jpg) | Upload directly to the lablab.ai cover image field. |
-| **Slide Presentation (HTML / PDF)** | [`docs/presentation.html`](file:///e:/OPENCODE/AssemblyLABLAB/docs/presentation.html) | Open in browser, click "🖨️ Export to PDF" or present directly. |
+| **Slide Presentation (PDF)** | [`docs/presentation.pdf`](file:///e:/OPENCODE/AssemblyLABLAB/docs/presentation.pdf) | Ready-to-upload 8-page PDF deck (also available in interactive HTML at [`docs/presentation.html`](file:///e:/OPENCODE/AssemblyLABLAB/docs/presentation.html)). |
 | **Slide Presentation Notes** | [`docs/slides.md`](file:///e:/OPENCODE/AssemblyLABLAB/docs/slides.md) | Slide outline and speaking notes. |
 | **Video Recording Script** | [`docs/demo-script.md`](file:///e:/OPENCODE/AssemblyLABLAB/docs/demo-script.md) | Exact 150-second narration, clicks, and timings. |
 
