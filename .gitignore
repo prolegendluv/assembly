@@ -20,6 +20,8 @@ apps/server/.env
 .DS_Store
 Thumbs.db
 *.log
+*.mp4
+*.webm
 
 # Scratch docs
 _docs.html
