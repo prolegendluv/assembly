@@ -62,8 +62,8 @@ assemblyai, voice-agent-api, universal-3, digital-twin, hazmat, osha-301, typesc
 | Requirement | Value / Instructions |
 |---|---|
 | **Public GitHub Repository** | `https://github.com/prolegendluv/assembly` |
-| **Demo Application Platform** | Render / Railway / Fly.io / Zeabur / Vercel (or Docker) |
-| **Application URL** | Your deployed public URL or staging link |
+| **Demo Application Platform** | Render |
+| **Application URL** | `https://sitespeak-voice-agent.onrender.com` *(or your assigned Render URL)* |
 
 ---
 
