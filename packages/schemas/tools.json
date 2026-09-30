@@ -1,0 +1,270 @@
+[
+    {
+        "type": "function",
+        "name": "create_incident_draft",
+        "description": "Open a new incident draft when the worker first describes what happened. Call as soon as you know the category and a rough location.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "site_id": {
+                    "type": "string",
+                    "description": "Canonical site id, e.g. north-yard, warehouse-b. Use lookup_site first if unsure."
+                },
+                "zone": {
+                    "type": "string",
+                    "description": "Zone within the site, e.g. bay 3, dock 1"
+                },
+                "category": {
+                    "type": "string",
+                    "enum": [
+                        "spill",
+                        "fall",
+                        "equipment",
+                        "electrical",
+                        "fire",
+                        "structural",
+                        "near_miss",
+                        "other"
+                    ]
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Worker's own words describing what happened"
+                }
+            },
+            "required": [
+                "site_id",
+                "zone",
+                "category",
+                "description"
+            ]
+        }
+    },
+    {
+        "type": "function",
+        "name": "update_incident",
+        "description": "Patch an open draft as new facts arrive (injuries, severity, corrected zone/category).",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "incident_id": {
+                    "type": "string"
+                },
+                "zone": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string",
+                    "enum": [
+                        "spill",
+                        "fall",
+                        "equipment",
+                        "electrical",
+                        "fire",
+                        "structural",
+                        "near_miss",
+                        "other"
+                    ]
+                },
+                "injuries_count": {
+                    "type": "number"
+                },
+                "injuries_desc": {
+                    "type": "string"
+                },
+                "severity": {
+                    "type": "string",
+                    "enum": [
+                        "low",
+                        "medium",
+                        "high",
+                        "critical"
+                    ]
+                }
+            },
+            "required": [
+                "incident_id"
+            ]
+        }
+    },
+    {
+        "type": "function",
+        "name": "assess_hazmat_protocol",
+        "description": "Lookup safety data sheet (SDS), mandatory PPE, evacuation radius, and containment procedures for chemicals, fuels, fumes, or hazardous materials.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "chemical_or_material": {
+                    "type": "string",
+                    "description": "Name or description of substance, e.g. ammonia, diesel, battery acid, chlorine, solvent, hydraulic fluid"
+                },
+                "estimated_volume": {
+                    "type": "string",
+                    "description": "e.g. 5 gallons, 50 liters, small puddle, ruptured drum"
+                }
+            },
+            "required": [
+                "chemical_or_material"
+            ]
+        }
+    },
+    {
+        "type": "function",
+        "name": "find_emergency_equipment",
+        "description": "Locate nearest emergency safety equipment like spill kit, eye wash station, AED, or fire extinguisher based on zone.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "equipment_type": {
+                    "type": "string",
+                    "enum": [
+                        "spill_kit",
+                        "eyewash_station",
+                        "aed_defibrillator",
+                        "fire_extinguisher",
+                        "first_aid_box"
+                    ],
+                    "description": "Type of safety equipment needed"
+                },
+                "near_zone": {
+                    "type": "string",
+                    "description": "Current worker location or zone, e.g. bay 3, aisle 2, dock 1"
+                }
+            },
+            "required": [
+                "equipment_type"
+            ]
+        }
+    },
+    {
+        "type": "function",
+        "name": "add_followup",
+        "description": "Queue a corrective follow-up action on the incident (e.g. cordon area, call first-aid, ventilate).",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "incident_id": {
+                    "type": "string"
+                },
+                "action": {
+                    "type": "string"
+                },
+                "assignee_role": {
+                    "type": "string",
+                    "description": "e.g. supervisor, first-aid, maintenance, hazmat_crew, emt"
+                },
+                "due_in_hours": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "incident_id",
+                "action"
+            ]
+        }
+    },
+    {
+        "type": "function",
+        "name": "trigger_emergency_broadcast",
+        "description": "Trigger an immediate site-wide emergency broadcast alarm and evacuation warning for critical life-safety threats (fire, explosion, toxic cloud, collapse).",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "site_id": {
+                    "type": "string",
+                    "description": "Canonical site id, e.g. north-yard, warehouse-b"
+                },
+                "zone": {
+                    "type": "string",
+                    "description": "Affected zone"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Specific hazard description warranting emergency alert"
+                },
+                "evacuation_required": {
+                    "type": "boolean",
+                    "description": "Whether immediate zone or facility evacuation is ordered"
+                }
+            },
+            "required": [
+                "site_id",
+                "reason"
+            ]
+        }
+    },
+    {
+        "type": "function",
+        "name": "query_site_status",
+        "description": "Answer questions from the worker or supervisor about current open hazards, site safety status, or recent incidents.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "site_id": {
+                    "type": "string",
+                    "description": "Site id to query"
+                },
+                "zone": {
+                    "type": "string",
+                    "description": "Optional zone filter"
+                }
+            },
+            "required": [
+                "site_id"
+            ]
+        }
+    },
+    {
+        "type": "function",
+        "name": "lookup_site",
+        "description": "Resolve a spoken location like 'bay 3' to a canonical site_id and zone.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Spoken location fragment"
+                }
+            },
+            "required": [
+                "query"
+            ]
+        }
+    },
+    {
+        "type": "function",
+        "name": "file_incident",
+        "description": "Validate and file the incident. Requires zone and category. Call when the report is complete.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "incident_id": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "incident_id"
+            ]
+        }
+    },
+    {
+        "type": "function",
+        "name": "cancel_incident",
+        "description": "Void a draft on false alarm ('never mind', 'false alarm').",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "incident_id": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "incident_id",
+                "reason"
+            ]
+        }
+    }
+]

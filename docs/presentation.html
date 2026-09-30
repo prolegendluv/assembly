@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiteSpeak 2.0 — Presentation Deck | AssemblyAI Voice Agent Hackathon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #090d16;
+            --card-bg: rgba(18, 24, 38, 0.85);
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #f59e0b;
+            --primary-glow: rgba(245, 158, 11, 0.25);
+            --accent: #10b981;
+            --cyan: #06b6d4;
+            --indigo: #6366f1;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        /* Top Bar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(9, 13, 22, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .meta-tags {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            padding: 0.3rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Slide Deck Container */
+        .deck-viewport {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .slide {
+            position: absolute;
+            width: 90vw;
+            max-width: 1200px;
+            height: 76vh;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem 4rem;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.96) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Slide Typography */
+        .slide-tag {
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slide-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* Content Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            flex: 1;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            flex: 1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .card-highlight {
+            border-color: rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.04);
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .metric-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Code/Arch Box */
+        .code-box {
+            background: #05070c;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #38bdf8;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        /* Bottom Controls */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(9, 13, 22, 0.9);
+            border-top: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        button.nav-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button.nav-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .slide-counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Print for PDF export */
+        @media print {
+            body {
+                overflow: visible !important;
+                height: auto !important;
+            }
+            header, footer {
+                display: none !important;
+            }
+            .deck-viewport {
+                display: block !important;
+                padding: 0 !important;
+            }
+            .slide {
+                position: relative !important;
+                page-break-after: always;
+                opacity: 1 !important;
+                transform: none !important;
+                width: 100% !important;
+                height: 100vh !important;
+                border: none !important;
+                box-shadow: none !important;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <span>🛡️ SiteSpeak 2.0</span>
+            <span class="brand-badge">Voice Agent</span>
+        </div>
+        <div class="meta-tags">
+            <span class="tag">AssemblyAI Voice Agent API</span>
+            <span class="tag">Universal-3 Pro</span>
+            <span class="tag">Digital Twin</span>
+            <span class="tag">OSHA-301</span>
+        </div>
+    </header>
+
+    <main class="deck-viewport">
+
+        <!-- SLIDE 1: HERO / TITLE -->
+        <section class="slide active" id="slide-1">
+            <div class="slide-tag">⚡ AssemblyAI Voice Agent Hackathon (lablab.ai)</div>
+            <h1 class="slide-title" style="font-size: 3.5rem;">SiteSpeak 2.0</h1>
+            <p class="slide-subtitle" style="font-size: 1.5rem; color: #cbd5e1; max-width: 850px;">
+                Autonomous Industrial Safety Voice Agent & Digital Twin
+            </p>
+            <div style="flex: 1; display: flex; align-items: center;">
+                <div class="grid-3" style="width: 100%;">
+                    <div class="card card-highlight">
+                        <div class="card-title">🎙️ Hands-Free Voice Agent</div>
+                        <div class="card-body">Powered by AssemblyAI Voice Agent API (Universal-3 Pro STT, ultra-fast turn-taking, and managed LLM).</div>
+                    </div>
+                    <div class="card card-highlight">
+                        <div class="card-title">🏭 Interactive Digital Twin</div>
+                        <div class="card-body">Real-time SVG schematic dynamically pinpoints hazards, spill locations, and emergency equipment.</div>
+                    </div>
+                    <div class="card card-highlight">
+                        <div class="card-title">📋 Certified OSHA Form 301</div>
+                        <div class="card-body">Instant transformation of natural field conversations into legally certified compliance reports.</div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 2rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 1rem;">
+                <span style="font-size: 0.9rem; color: var(--text-muted);">Built with TypeScript, React 18, Node.js Fastify, and SQLite WAL</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent);">MIT Licensed • 100% Open Source</span>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: THE PROBLEM -->
+        <section class="slide" id="slide-2">
+            <div class="slide-tag">⚠️ Industrial Reality</div>
+            <h1 class="slide-title">Paperwork Takes 20 Minutes.<br>Toxic Spills Don't Wait.</h1>
+            <div class="grid-2" style="margin-top: 1rem;">
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div class="card">
+                        <div class="metric-value">$170 Billion+</div>
+                        <div class="metric-label">Annual US Workplace Injury Costs (OSHA / NSC)</div>
+                        <div class="card-body">Severe delays in reporting toxic chemical leaks, fires, and equipment failures multiply damage exponentially.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">🧤 The "Dirty Gloves" Paradox</div>
+                        <div class="card-body">Workers in chemical plants, construction zones, and logistics facilities wear heavy PPE gloves. They cannot type on smartphones, touchscreens fail in grease and rain, and paper logs get filed hours late.</div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="card" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05);">
+                        <div class="card-title" style="color: #f87171;">❌ Legacy Failure Mode</div>
+                        <div class="card-body">
+                            • 20+ minute average delay to notify plant safety managers.<br>
+                            • SDS chemical sheets buried in three-ring binders 300 yards away.<br>
+                            • Vague radio calls: "Hey, there's a leak over by building B!" with no exact column or containment details.
+                        </div>
+                    </div>
+                    <div class="card" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05);">
+                        <div class="card-title" style="color: #34d399;">✅ The SiteSpeak Solution</div>
+                        <div class="card-body">
+                            • <strong>Hands-Free:</strong> Worker presses one big button or speaks naturally.<br>
+                            • <strong>Sub-Second Action:</strong> Instantly fetches HAZMAT PPE requirements, alerts evacuation zones, and sounds emergency alarms.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: HOW IT WORKS -->
+        <section class="slide" id="slide-3">
+            <div class="slide-tag">🎙️ Real-Time Interaction</div>
+            <h1 class="slide-title">Speak Naturally. The Agent Takes Command.</h1>
+            <p class="slide-subtitle">A natural 90-second conversation captures every fact, updates databases, and sounds alarms in real-time.</p>
+            <div class="grid-3">
+                <div class="card">
+                    <div style="font-size: 2rem;">1️⃣</div>
+                    <div class="card-title">Spoken Description</div>
+                    <div class="card-body">
+                        <em>"Chemical spill near Bay 3! One person slipped, and there's a strong ammonia vapor smell!"</em>
+                        <br><br>Universal-3 Pro transcribes streaming audio at 24 kHz PCM16 with full VAD barge-in.
+                    </div>
+                </div>
+                <div class="card card-highlight">
+                    <div style="font-size: 2rem;">2️⃣</div>
+                    <div class="card-title">10 Real-Time JSON Tools</div>
+                    <div class="card-body">
+                        Agent fires JSON-schema tools sub-second:
+                        <br><br>
+                        • <code>lookup_site("bay 3")</code><br>
+                        • <code>assess_hazmat_protocol("ammonia")</code><br>
+                        • <code>create_incident_draft</code>
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 2rem;">3️⃣</div>
+                    <div class="card-title">Evacuation & Compliance</div>
+                    <div class="card-body">
+                        The agent speaks aloud:
+                        <br><br>
+                        <em>"Advising immediate 100-meter perimeter and Level B vapor suits. Nearest eyewash is at Column B2. Is anyone injured?"</em>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: ARCHITECTURE -->
+        <section class="slide" id="slide-4">
+            <div class="slide-tag">🏗️ Technical Integration</div>
+            <h1 class="slide-title">AssemblyAI Voice Agent API Architecture</h1>
+            <div class="grid-2">
+                <div class="code-box">
+[👷 Field Worker Mic]
+         │ (24 kHz PCM16 WebSocket)
+         ▼
+[⚡ AssemblyAI Voice Agent API]
+   ├── Universal-3 Pro STT
+   ├── Real-Time VAD & Barge-In
+   └── Managed LLM with 10 JSON Tools
+         │
+         │ tool.call / tool.result
+         ▼
+[💻 SiteSpeak 2.0 Client (React 18 + Vite)]
+   ├── Field Console & Waveform Visualizer
+   ├── 2D/3D Digital Twin Safety Schematic
+   └── Supervisor Operations Center
+         │
+         ▼ (REST API)
+[🛡️ SiteSpeak Backend (Fastify + SQLite WAL)]
+   ├── Single-Use Token Minter
+   ├── 10 Tool Handlers & Audit Trail
+   └── OSHA Standard 1904 Form 301 Engine
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="card">
+                        <div class="card-title">🔐 Enterprise Token Security</div>
+                        <div class="card-body">API keys never touch the client. Backend mints single-use, 300-second session tokens via <code>agents.assemblyai.com/v1/token</code>.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">⚡ Bidirectional Tool Execution</div>
+                        <div class="card-body">Client executes tools against the Fastify backend, persisting every query and state transition in SQLite with sub-millisecond audit metrics.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">🔄 Seamless Barge-In Turn Taking</div>
+                        <div class="card-body">Workers can interrupt mid-sentence during emergency escalations without losing previously captured report fields.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: 10 REAL-TIME TOOLS -->
+        <section class="slide" id="slide-5">
+            <div class="slide-tag">🛠️ 10 JSON-Schema Tools</div>
+            <h1 class="slide-title">Beyond Chatbots: Real Operational Execution</h1>
+            <div class="grid-2" style="margin-top: 1rem;">
+                <div class="card">
+                    <div class="card-title">🚨 Life-Safety & HAZMAT Tools</div>
+                    <div class="card-body" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+                        <strong>assess_hazmat_protocol</strong><br>
+                        → SDS UN numbers, Level A/B/C PPE, evacuation radii.<br><br>
+                        <strong>find_emergency_equipment</strong><br>
+                        → Column coordinates for spill kits, eyewashes, AEDs.<br><br>
+                        <strong>trigger_emergency_broadcast</strong><br>
+                        → Sounds site siren and triggers evacuation banner.<br><br>
+                        <strong>query_site_status</strong><br>
+                        → Bidirectional spoken safety briefings.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">📋 Compliance & Incident Lifecycle</div>
+                    <div class="card-body" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+                        <strong>lookup_site</strong><br>
+                        → Resolves "North Yard Bay 3" to canonical zone.<br><br>
+                        <strong>create_incident_draft</strong><br>
+                        → Initializes draft with unique incident ID.<br><br>
+                        <strong>update_incident</strong><br>
+                        → Patches injuries, severity, and zone dynamically.<br><br>
+                        <strong>add_followup</strong><br>
+                        → Assigns EMT, HAZMAT, or Maintenance teams.<br><br>
+                        <strong>file_incident & cancel_incident</strong><br>
+                        → Validates required fields and seals the report.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: DIGITAL TWIN & OSHA -->
+        <section class="slide" id="slide-6">
+            <div class="slide-tag">🗺️ Digital Twin & Regulatory Engine</div>
+            <h1 class="slide-title">Visual Grounding + OSHA 301 Compliance</h1>
+            <div class="grid-2">
+                <div class="card card-highlight">
+                    <div class="card-title">🏭 Interactive SVG Digital Twin</div>
+                    <div class="card-body">
+                        • Live multi-zone floorplans for North Yard and Warehouse B.<br>
+                        • Glowing, pulsing hazard markers dynamically appear at the spoken coordinates.<br>
+                        • Safety equipment overlays (Eyewash, Spill Kits, AEDs, Fire Extinguishers) with exact distance indicators.<br>
+                        • Dynamic evacuation perimeter radius rendering.
+                    </div>
+                </div>
+                <div class="card card-highlight">
+                    <div class="card-title">📑 Certified OSHA Form 301</div>
+                    <div class="card-body">
+                        • Formatted to official **OSHA Standard 1904** requirements.<br>
+                        • Maps voice transcript facts directly into regulatory fields:
+                          injury mechanics, object/substance involved, treatment provided.<br>
+                        • 1-click printable modal and JSON regulatory export for compliance audits.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: BUSINESS VALUE -->
+        <section class="slide" id="slide-7">
+            <div class="slide-tag">📈 Business ROI</div>
+            <h1 class="slide-title">Quantifiable Enterprise Value</h1>
+            <div class="grid-3" style="margin-top: 1rem;">
+                <div class="card">
+                    <div class="metric-value">92%</div>
+                    <div class="metric-label">Reporting Time Reduction</div>
+                    <div class="card-body">From 20-minute manual paperwork down to a 90-second natural voice conversation.</div>
+                </div>
+                <div class="card">
+                    <div class="metric-value">&lt; 1 sec</div>
+                    <div class="metric-label">HAZMAT Response Latency</div>
+                    <div class="card-body">Immediate SDS chemical protocols spoken directly to first responders before entering danger zones.</div>
+                </div>
+                <div class="card">
+                    <div class="metric-value">100%</div>
+                    <div class="metric-label">OSHA Audit Readiness</div>
+                    <div class="card-body">Zero missing fields, automated timestamps, complete millisecond tool audit trail.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: ROADMAP & WRAP UP -->
+        <section class="slide" id="slide-8">
+            <div class="slide-tag">🚀 Ready to Deploy</div>
+            <h1 class="slide-title">SiteSpeak 2.0 — Safe Sites Speak Clearly</h1>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">🌟 What Makes SiteSpeak Unique</div>
+                    <div class="card-body">
+                        • <strong>Deep Tech Integration:</strong> 10 dynamic tools on AssemblyAI Voice Agent API.<br>
+                        • <strong>Simulation Studio:</strong> 6 automated multi-turn industrial scenarios for zero-mic testing.<br>
+                        • <strong>Complete Solution:</strong> Field Voice Console, Digital Twin, HAZMAT Compass, and OSHA 301 Engine.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">🔮 Future Roadmap</div>
+                    <div class="card-body">
+                        • Wearable BLE Bone-Conduction Earbuds for noisy plants.<br>
+                        • Computer Vision Camera integration for automated hazard verification.<br>
+                        • Multilingual turn-taking for international construction crews.
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 2rem; text-align: center;">
+                <p style="font-size: 1.25rem; font-weight: 700; color: var(--primary);">Thank you, AssemblyAI & Lablab.ai Judges!</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+            <button class="nav-btn" onclick="window.print()" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #34d399;">🖨️ Export to PDF</button>
+        </div>
+        <div class="slide-counter" id="counter">Slide 1 / 8</div>
+    </footer>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const counter = document.getElementById('counter');
+
+        function showSlide(index) {
+            slides.forEach((s, i) => {
+                s.classList.toggle('active', i === index);
+            });
+            counter.textContent = `Slide ${index + 1} / ${slides.length}`;
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

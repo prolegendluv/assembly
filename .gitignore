@@ -1,0 +1,28 @@
+node_modules/
+dist/
+apps/client/dist/
+apps/server/dist/
+
+# SQLite database files
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+sitespeak.db*
+
+# Environment secrets
+.env
+.env.*
+apps/server/.env
+!apps/server/.env.example
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Scratch docs
+_docs.html
+_llms.txt
+_agent_instructions.md
+_ver.txt
